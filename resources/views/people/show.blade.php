@@ -11,7 +11,21 @@
                 <div class="p-6 text-gray-900">
                     <!-- Person Information -->
                     <div class="mb-8">
-                        <h3 class="text-lg font-medium mb-4">Basic Information</h3>
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-lg font-medium mb-4">Basic Information</h3>
+                            @auth
+                                <div class="flex flex-col space-y-2">
+                                    <a href="{{ route('modifications.create.person', $person) }}" 
+                                       class="inline-flex items-center px-3 py-1 bg-blue-100 border border-transparent rounded-md text-xs text-blue-800 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                       Proposer une modification
+                                    </a>
+                                    <a href="{{ route('modifications.create.relationship', ['person_id' => $person->id]) }}" 
+                                       class="inline-flex items-center px-3 py-1 bg-purple-100 border border-transparent rounded-md text-xs text-purple-800 hover:bg-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                       Proposer une nouvelle relation
+                                    </a>
+                                </div>
+                            @endauth
+                        </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <p><span class="font-semibold">First Name:</span> {{ $person->first_name }}</p>
