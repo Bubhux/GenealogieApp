@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PersonController;
+use App\Http\Controllers\RelationshipController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -13,13 +14,22 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // People routes
     Route::resource('people', PersonController::class)->only([
         'index', 'show', 'create', 'store'
     ]);
+
+    // Relationships routes - définies explicitement
+    Route::get('/relationships/create', [RelationshipController::class, 'create'])
+        ->name('relationships.create');
+
+    Route::post('/relationships', [RelationshipController::class, 'store'])
+        ->name('relationships.store');
 });
 
 require __DIR__.'/auth.php';

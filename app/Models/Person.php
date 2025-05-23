@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Person extends Model
 {
@@ -85,5 +86,32 @@ class Person extends Model
         }
 
         return false; // No relationship found
+    }
+
+    public static function createsCycle($parentId, $childId)
+    {
+        if ($parentId == $childId) return true;
+
+        $visited = [$childId];
+        $queue = new \SplQueue();
+        $queue->enqueue($childId);
+
+        while (!$queue->isEmpty()) {
+            $current = $queue->dequeue();
+
+            $parents = DB::table('relationships')
+                ->where('child_id', $current)
+                ->pluck('parent_id');
+
+            foreach ($parents as $parent) {
+                if ($parent == $parentId) return true;
+                if (!in_array($parent, $visited)) {
+                    $visited[] = $parent;
+                    $queue->enqueue($parent);
+                }
+            }
+        }
+
+        return false;
     }
 }
