@@ -28,7 +28,7 @@ class RelationshipController extends Controller
             ],
             'child_id' => 'required|exists:people,id|different:parent_id',
         ]);
-
+                
         $validator->after(function ($validator) use ($request) {
             if (Person::createsCycle($request->parent_id, $request->child_id)) {
                 $validator->errors()->add('child_id', 'Cette relation créerait un cycle dans l\'arbre généalogique');
