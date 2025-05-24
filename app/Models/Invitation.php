@@ -6,15 +6,28 @@ use Illuminate\Database\Eloquent\Model;
 
 class Invitation extends Model
 {
-    protected $fillable = ['inviter_id', 'person_id', 'email', 'token', 'status'];
+    protected $fillable = [
+        'person_id',
+        'email',
+        'token',
+        'message',
+        'invited_by',
+        'expires_at',
+        'accepted_at'
+    ];
 
-    public function inviter()
-    {
-        return $this->belongsTo(User::class, 'inviter_id');
-    }
+    protected $dates = [
+        'expires_at',
+        'accepted_at'
+    ];
 
     public function person()
     {
         return $this->belongsTo(Person::class);
+    }
+
+    public function invitedBy()
+    {
+        return $this->belongsTo(User::class, 'invited_by');
     }
 }
