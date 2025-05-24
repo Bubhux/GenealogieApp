@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Modifications en attente
+            Modifications acceptées
         </h2>
     </x-slot>
 
@@ -27,7 +27,7 @@
                 <div class="p-6">
                     @if($modifications->isEmpty())
                         <div class="bg-blue-100 border border-blue-300 text-blue-800 px-4 py-3 rounded">
-                            Aucune modification en attente de validation.
+                            Aucune modification acceptée pour le moment.
                         </div>
                     @else
                         <div class="space-y-4">
@@ -54,9 +54,14 @@
                                         @endif
                                     </p>
 
-                                    <span class="text-xs text-gray-500">
-                                        Statut: En attente ({{ $modification->approveVotesCount() }} ✔ / {{ $modification->rejectVotesCount() }} ✖)
-                                    </span>
+                                    <div class="flex justify-between items-center mt-2">
+                                        <span class="text-xs text-green-600 font-semibold">
+                                            Acceptée le {{ $modification->updated_at->format('d/m/Y H:i') }}
+                                        </span>
+                                        <span class="text-xs text-gray-500">
+                                            {{ $modification->approveVotesCount() }} votes favorables
+                                        </span>
+                                    </div>
                                 </a>
                             @endforeach
                         </div>

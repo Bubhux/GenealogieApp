@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Modification;
 use App\Models\Person;
 use App\Models\Relationship;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
@@ -140,6 +141,7 @@ class ModificationController extends Controller
         } elseif ($rejectCount >= 3) {
             $modification->update(['status' => 'rejected']);
         }
+        // La modification reste dans la base de données avec son nouveau statut
     }
 
     protected function applyModification(Modification $modification)
@@ -151,11 +153,21 @@ class ModificationController extends Controller
         } else {
             // Ajout d'une relation
             $data = json_decode($modification->new_value, true);
-            Relationship::create([
-                'parent_id' => $data['parent_id'],
-                'child_id' => $data['child_id'],
-                'created_by' => $modification->user_id
-            ]);
+
+            // Vérifiez que parent_id et child_id existent avant de créer la relation
+            if (!empty($data['parent_id']) && !empty($data['child_id'])) {
+                Relationship::create([
+                    'parent_id' => $data['parent_id'],
+                    'child_id' => $data['child_id'],
+                    'created_by' => $modification->user_id
+                ]);
+            } else {
+                // Gérer le cas où un des IDs est manquant
+                \Log::error('Tentative de création de relation incomplète', [
+                    'modification_id' => $modification->id,
+                    'data' => $data
+                ]);
+            }
         }
 
         // Notifier les utilisateurs concernés
@@ -168,24 +180,43 @@ class ModificationController extends Controller
 
     protected function getInterestedUsers(Modification $modification)
     {
-        // Retourne une collection d'utilisateurs à notifier
-        // Exemple basique - à adapter selon vos besoins
+        $users = collect([$modification->user]);
+
         if ($modification->person_id) {
-            return User::whereIn('id', [
-                $modification->person->created_by,
-                $modification->user_id
-            ])->get();
+            $users->push($modification->person->creator);
+        } else {
+            $data = json_decode($modification->new_value, true);
+            $parent = Person::with('creator')->find($data['parent_id'] ?? null);
+            $child = Person::with('creator')->find($data['child_id'] ?? null);
+
+            if ($parent && $parent->creator) {
+                $users->push($parent->creator);
+            }
+            if ($child && $child->creator) {
+                $users->push($child->creator);
+            }
         }
 
-        // Pour les relations, notifier les créateurs des personnes concernées
-        $data = json_decode($modification->new_value, true);
-        $parent = Person::find($data['parent_id']);
-        $child = Person::find($data['child_id']);
+        return $users->filter()->unique('id');
+    }
 
-        return User::whereIn('id', [
-            $parent->created_by,
-            $child->created_by,
-            $modification->user_id
-        ])->get();
+    public function approved()
+    {
+        $modifications = Modification::with(['user', 'person', 'relationship'])
+            ->where('status', 'approved')
+            ->orderBy('updated_at', 'desc')
+            ->paginate(10);
+
+        return view('modifications.approved', compact('modifications'));
+    }
+
+    public function rejected()
+    {
+        $modifications = Modification::with(['user', 'person', 'relationship'])
+            ->where('status', 'rejected')
+            ->orderBy('updated_at', 'desc')
+            ->paginate(10);
+
+        return view('modifications.rejected', compact('modifications'));
     }
 }

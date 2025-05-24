@@ -41,6 +41,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/store-relationship', [ModificationController::class, 'storeForRelationship'])->name('modifications.store.relationship');
         Route::get('/{modification}', [ModificationController::class, 'show'])->name('modifications.show');
         Route::post('/{modification}/votes', [ModificationController::class, 'storeVote'])->name('votes.store');
+        Route::get('/modifications/approved', [ModificationController::class, 'approved'])
+            ->name('modifications.approved');
+        Route::get('/modifications/rejected', [ModificationController::class, 'rejected'])
+            ->name('modifications.rejected');
     });
 
     // Propositions
