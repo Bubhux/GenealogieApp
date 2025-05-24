@@ -1,3 +1,7 @@
+@php
+use App\Models\Person;
+@endphp
+
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -27,9 +31,15 @@
                             <p><strong>Nouvelle valeur:</strong> {{ $modification->new_value }}</p>
                         @else
                             <h4 class="text-md font-semibold text-gray-700 mt-6 mb-2">Nouvelle relation</h4>
-                            @php $relation = json_decode($modification->new_value) @endphp
-                            <p><strong>Parent:</strong> {{ Person::find($relation->parent_id)->full_name }}</p>
-                            <p><strong>Enfant:</strong> {{ Person::find($relation->child_id)->full_name }}</p>
+                            @php 
+                                $relation = json_decode($modification->new_value);
+                            @endphp
+                            @if(isset($relation->parent_id) && $parent = Person::find($relation->parent_id))
+                                <p><strong>Parent:</strong> {{ $parent->full_name }}</p>
+                            @endif
+                            @if(isset($relation->child_id) && $child = Person::find($relation->child_id))
+                                <p><strong>Enfant:</strong> {{ $child->full_name }}</p>
+                            @endif
                         @endif
                     </div>
 

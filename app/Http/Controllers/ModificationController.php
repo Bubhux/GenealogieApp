@@ -94,9 +94,16 @@ class ModificationController extends Controller
     public function show(Modification $modification)
     {
         $modification->load(['user', 'person', 'relationship', 'votes.user']);
-        
+
+        // Précharger les données de relation si nécessaire
+        if (!$modification->person_id) {
+            $relationData = json_decode($modification->new_value);
+            $modification->parent = Person::find($relationData->parent_id ?? null);
+            $modification->child = Person::find($relationData->child_id ?? null);
+        }
+
         $userVote = $modification->votes()->where('user_id', Auth::id())->first();
-        
+
         return view('modifications.show', compact('modification', 'userVote'));
     }
 

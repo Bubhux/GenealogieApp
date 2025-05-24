@@ -19,30 +19,30 @@
                     @endisset
 
                     <div class="mb-4">
-                        <label for="parent_id" class="block text-sm font-medium text-gray-700">Parent</label>
-                        <select id="parent_id" name="parent_id" required
+                        <label for="parent_id" class="block text-sm font-medium text-gray-700">Parent (optionnel)</label>
+                        <select id="parent_id" name="parent_id"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                            <option value="">Sélectionnez un parent</option>
+                            <option value="">Sélectionnez un parent (optionnel)</option>
                             @foreach($people as $person)
-                            <option 
-                                value="{{ $person->id }}" 
-                                {{ old('parent_id', request('parent_id')) == $person->id ? 'selected' : '' }}
-                                class="py-1"
-                            >
-                                {{ $person->first_name }} {{ $person->last_name }}
-                                @if($person->date_of_birth)
-                                    ({{ \Carbon\Carbon::parse($person->date_of_birth)->format('Y') }})
-                                @endif
-                            </option>
-                        @endforeach
+                                <option 
+                                    value="{{ $person->id }}" 
+                                    {{ old('parent_id', request('parent_id')) == $person->id ? 'selected' : '' }}
+                                    class="py-1"
+                                >
+                                    {{ $person->first_name }} {{ $person->last_name }}
+                                    @if($person->date_of_birth)
+                                        ({{ \Carbon\Carbon::parse($person->date_of_birth)->format('Y') }})
+                                    @endif
+                                </option>
+                            @endforeach
                         </select>
                     </div>
 
                     <div class="mb-4">
-                        <label for="child_id" class="block text-sm font-medium text-gray-700">Enfant</label>
-                        <select id="child_id" name="child_id" required
+                        <label for="child_id" class="block text-sm font-medium text-gray-700">Enfant (optionnel)</label>
+                        <select id="child_id" name="child_id"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                            <option value="">Sélectionnez un enfant</option>
+                            <option value="">Sélectionnez un enfant (optionnel)</option>
                             @foreach($people as $person)
                                 <option 
                                     value="{{ $person->id }}"
@@ -55,6 +55,17 @@
                                     @endif
                                 </option>
                             @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="relation_type" class="block text-sm font-medium text-gray-700">Type de relation</label>
+                        <select id="relation_type" name="relation_type" required
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <option value="">Sélectionnez un type</option>
+                            <option value="parent_only">Uniquement définir un parent</option>
+                            <option value="child_only">Uniquement définir un enfant</option>
+                            <option value="both">Définir une relation parent-enfant</option>
                         </select>
                     </div>
 
