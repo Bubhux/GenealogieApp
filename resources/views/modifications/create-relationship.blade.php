@@ -90,4 +90,21 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+        <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const parentId = document.getElementById('parent_id').value;
+            const childId = document.getElementById('child_id').value;
+
+            if (!parentId || !childId) {
+                e.preventDefault();
+                alert('Vous devez sélectionner un parent et un enfant');
+            } else if (parentId === childId) {
+                e.preventDefault();
+                alert('Une personne ne peut pas être son propre parent/enfant');
+            }
+        });
+        </script>
+    @endpush
 </x-app-layout>
