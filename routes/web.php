@@ -36,6 +36,8 @@ Route::middleware('auth')->group(function () {
     // Modifications routes
     // Routes pour les modifications
     Route::prefix('modifications')->group(function () {
+        Route::get('/approved', [ModificationController::class, 'approved'])->name('modifications.approved');
+        Route::get('/rejected', [ModificationController::class, 'rejected'])->name('modifications.rejected');
         Route::get('/', [ModificationController::class, 'index'])->name('modifications.index');
         Route::get('/create-person/{person}', [ModificationController::class, 'createForPerson'])->name('modifications.create.person');
         Route::post('/store-person/{person}', [ModificationController::class, 'storeForPerson'])->name('modifications.store.person');
@@ -43,8 +45,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/store-relationship', [ModificationController::class, 'storeForRelationship'])->name('modifications.store.relationship');
         Route::get('/{modification}', [ModificationController::class, 'show'])->name('modifications.show');
         Route::post('/{modification}/votes', [ModificationController::class, 'storeVote'])->name('votes.store');
-        Route::get('/approved', [ModificationController::class, 'approved'])->name('modifications.approved');
-        Route::get('/rejected', [ModificationController::class, 'rejected'])->name('modifications.rejected');
     });
 
     // Routes pour l'authentification
