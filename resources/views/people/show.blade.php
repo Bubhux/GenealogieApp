@@ -44,10 +44,12 @@
                     <div class="mb-8">
                         <div class="flex justify-between items-center">
                             <h3 class="text-lg font-medium">Parents</h3>
-                            <a href="{{ route('relationships.create') }}?child_id={{ $person->id }}" 
-                               class="inline-flex items-center px-3 py-1 bg-blue-100 border border-transparent rounded-md text-xs text-blue-800 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                               + Add Parent
-                            </a>
+                            @if(auth()->check() && auth()->id() === $person->created_by)
+                                <a href="{{ route('relationships.create') }}?child_id={{ $person->id }}" 
+                                   class="inline-flex items-center px-3 py-1 bg-blue-100 border border-transparent rounded-md text-xs text-blue-800 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                   + Add Parent
+                                </a>
+                            @endif
                         </div>
                         <div class="mt-2">
                             @if($person->parents->count() > 0)
@@ -73,15 +75,17 @@
                                 <div class="text-center py-4">
                                     <h3 class="mt-2 text-sm font-medium text-gray-900">No parents</h3>
                                     <p class="mt-1 text-sm text-gray-500">Get started by adding a parent relationship.</p>
-                                    <div class="mt-6">
-                                        <a href="{{ route('relationships.create') }}?child_id={{ $person->id }}" 
-                                           class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                           <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                               <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-                                           </svg>
-                                           Add Parent
-                                        </a>
-                                    </div>
+                                    @if(auth()->check() && auth()->id() === $person->created_by)
+                                        <div class="mt-6">
+                                            <a href="{{ route('relationships.create') }}?child_id={{ $person->id }}" 
+                                            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                            <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                                            </svg>
+                                            Add Parent
+                                            </a>
+                                        </div>
+                                    @endif
                                 </div>
                             @endif
                         </div>
@@ -91,10 +95,12 @@
                     <div class="mb-8">
                         <div class="flex justify-between items-center">
                             <h3 class="text-lg font-medium">Children</h3>
-                            <a href="{{ route('relationships.create') }}?parent_id={{ $person->id }}" 
-                               class="inline-flex items-center px-3 py-1 bg-green-100 border border-transparent rounded-md text-xs text-green-800 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                               + Add Child
-                            </a>
+                            @if(auth()->check() && auth()->id() === $person->created_by)
+                                <a href="{{ route('relationships.create') }}?parent_id={{ $person->id }}" 
+                                   class="inline-flex items-center px-3 py-1 bg-green-100 border border-transparent rounded-md text-xs text-green-800 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                   + Add Child
+                                </a>
+                            @endif
                         </div>
                         <div class="mt-2">
                             @if($person->children->count() > 0)
@@ -120,15 +126,17 @@
                                 <div class="text-center py-4">
                                     <h3 class="mt-2 text-sm font-medium text-gray-900">No children</h3>
                                     <p class="mt-1 text-sm text-gray-500">Get started by adding a child relationship.</p>
-                                    <div class="mt-6">
-                                        <a href="{{ route('relationships.create') }}?parent_id={{ $person->id }}" 
-                                           class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                                           <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                               <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-                                           </svg>
-                                           Add Child
-                                        </a>
-                                    </div>
+                                    @if(auth()->check() && auth()->id() === $person->created_by)
+                                        <div class="mt-6">
+                                            <a href="{{ route('relationships.create') }}?parent_id={{ $person->id }}" 
+                                            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                            <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                                            </svg>
+                                            Add Child
+                                            </a>
+                                        </div>
+                                    @endif
                                 </div>
                             @endif
                         </div>
