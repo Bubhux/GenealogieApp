@@ -33,17 +33,15 @@ Route::middleware('auth')->group(function () {
         ->name('relationships.store');
 
     // Modifications routes
-    Route::get('/modifications', [ModificationController::class, 'index'])->name('modifications.index');
-    Route::get('/people/{person}/modifications/create-person', [ModificationController::class, 'createForPerson'])
-        ->name('modifications.create.person');
-    Route::post('/people/{person}/modifications', [ModificationController::class, 'storeForPerson'])
-        ->name('modifications.store.person');
-    Route::get('/modifications/create-relationship', [ModificationController::class, 'createForRelationship'])
-        ->name('modifications.create.relationship');
-    Route::post('/relationships/modifications', [ModificationController::class, 'storeForRelationship'])
-        ->name('modifications.store.relationship');
-    Route::get('/modifications/{modification}', [ModificationController::class, 'show'])
-        ->name('modifications.show');
+    Route::prefix('modifications')->group(function () {
+        Route::get('/', [ModificationController::class, 'index'])->name('modifications.index');
+        Route::get('/create-person/{person}', [ModificationController::class, 'createForPerson'])->name('modifications.create.person');
+        Route::post('/store-person/{person}', [ModificationController::class, 'storeForPerson'])->name('modifications.store.person');
+        Route::get('/create-relationship', [ModificationController::class, 'createForRelationship'])->name('modifications.create.relationship');
+        Route::post('/store-relationship', [ModificationController::class, 'storeForRelationship'])->name('modifications.store.relationship');
+        Route::get('/{modification}', [ModificationController::class, 'show'])->name('modifications.show');
+        Route::post('/{modification}/votes', [ModificationController::class, 'storeVote'])->name('votes.store');
+    });
 
     // Propositions
     Route::post('/people/{person}/propose-modification', [PersonController::class, 'proposeModification'])

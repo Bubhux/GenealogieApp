@@ -18,8 +18,15 @@
                     <x-nav-link :href="route('people.index')" :active="request()->routeIs('people.*')">
                         {{ __('People') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('modifications.index')" :active="request()->routeIs('modifications.*')">
+                        {{ __('Pending Modifications') }}
+                        @if($pendingCount = \App\Models\Modification::where('status', 'pending')->count())
+                            <span class="ml-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-500 rounded-full">
+                                {{ $pendingCount }}
+                            </span>
+                        @endif
+                    </x-nav-link>
                 </div>
-            </div>
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
@@ -75,6 +82,14 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('people.index')" :active="request()->routeIs('people.*')">
                 {{ __('People') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('modifications.index')" :active="request()->routeIs('modifications.*')">
+                {{ __('Pending Modifications') }}
+                @if($pendingCount = \App\Models\Modification::where('status', 'pending')->count())
+                    <span class="ml-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-500 rounded-full">
+                        {{ $pendingCount }}
+                    </span>
+                @endif
             </x-responsive-nav-link>
         </div>
 
