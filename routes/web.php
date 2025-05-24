@@ -5,6 +5,7 @@ use App\Http\Controllers\PersonController;
 use App\Http\Controllers\RelationshipController;
 use App\Http\Controllers\ModificationController;
 use App\Http\Controllers\VoteController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -33,6 +34,7 @@ Route::middleware('auth')->group(function () {
         ->name('relationships.store');
 
     // Modifications routes
+    // Routes pour les modifications
     Route::prefix('modifications')->group(function () {
         Route::get('/', [ModificationController::class, 'index'])->name('modifications.index');
         Route::get('/create-person/{person}', [ModificationController::class, 'createForPerson'])->name('modifications.create.person');
@@ -41,10 +43,19 @@ Route::middleware('auth')->group(function () {
         Route::post('/store-relationship', [ModificationController::class, 'storeForRelationship'])->name('modifications.store.relationship');
         Route::get('/{modification}', [ModificationController::class, 'show'])->name('modifications.show');
         Route::post('/{modification}/votes', [ModificationController::class, 'storeVote'])->name('votes.store');
-        Route::get('/modifications/approved', [ModificationController::class, 'approved'])
-            ->name('modifications.approved');
-        Route::get('/modifications/rejected', [ModificationController::class, 'rejected'])
-            ->name('modifications.rejected');
+        Route::get('/approved', [ModificationController::class, 'approved'])->name('modifications.approved');
+        Route::get('/rejected', [ModificationController::class, 'rejected'])->name('modifications.rejected');
+    });
+
+    // Routes pour l'authentification
+    Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
+    Route::post('register', [RegisteredUserController::class, 'store']);
+
+    // Routes pour les personnes
+    Route::prefix('people')->group(function () {
+        Route::get('/{person}', [PersonController::class, 'show'])->name('people.show');
+        Route::get('/{person}/invite', [PersonController::class, 'showInviteForm'])->name('people.invite');
+        Route::post('/{person}/send-invitation', [PersonController::class, 'sendInvitation'])->name('people.send-invitation');
     });
 
     // Propositions
