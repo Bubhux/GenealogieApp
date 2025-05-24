@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 class Person extends Model
 {
-    // Ajoutez ces 3 sections :
+    use HasFactory;
+
     protected $fillable = [
         'created_by',
         'first_name', 
@@ -57,40 +59,73 @@ class Person extends Model
             return 0;
         }
 
-        $visited = [$this->id => 0];
+        // Charge toutes les relations en une seule requête
+        $allRelationships = DB::table('relationships')
+            ->select('parent_id', 'child_id')
+            ->get()
+            ->groupBy('parent_id')
+            ->toArray();
+
+        $visited = [$this->id => ['degree' => 0, 'path' => (string)$this->id]];
         $queue = new \SplQueue();
         $queue->enqueue($this->id);
 
         while (!$queue->isEmpty()) {
             $current = $queue->dequeue();
-            $currentDegree = $visited[$current];
+            $currentDegree = $visited[$current]['degree'];
 
             if ($currentDegree >= 25) {
                 return false;
             }
 
-            // Get all relationships for current person
-            $relationships = DB::select("
-                SELECT parent_id, child_id 
-                FROM relationships 
-                WHERE parent_id = ? OR child_id = ?
-            ", [$current, $current]);
+            // Récupére les relations depuis le cache
+            $relationships = $allRelationships[$current] ?? [];
 
             foreach ($relationships as $rel) {
-                $relatedId = $rel->parent_id == $current ? $rel->child_id : $rel->parent_id;
-
-                if ($relatedId == $target_person_id) {
-                    return $currentDegree + 1;
-                }
+                $relatedId = $rel->child_id;
 
                 if (!isset($visited[$relatedId])) {
-                    $visited[$relatedId] = $currentDegree + 1;
+                    $visited[$relatedId] = [
+                        'degree' => $currentDegree + 1,
+                        'path' => $visited[$current]['path'] . '->' . $relatedId
+                    ];
+
+                    if ($relatedId == $target_person_id) {
+                        return [
+                            'degree' => $currentDegree + 1,
+                            'path' => $visited[$relatedId]['path']
+                        ];
+                    }
+
                     $queue->enqueue($relatedId);
+                }
+            }
+
+            // Vérifie aussi les relations inverses (parents)
+            $parentRelationships = array_filter($allRelationships, function($rels) use ($current) {
+                return in_array($current, array_column($rels, 'child_id'));
+            });
+
+            foreach ($parentRelationships as $parentId => $rels) {
+                if (!isset($visited[$parentId])) {
+                    $visited[$parentId] = [
+                        'degree' => $currentDegree + 1,
+                        'path' => $visited[$current]['path'] . '->' . $parentId
+                    ];
+
+                    if ($parentId == $target_person_id) {
+                        return [
+                            'degree' => $currentDegree + 1,
+                            'path' => $visited[$parentId]['path']
+                        ];
+                    }
+
+                    $queue->enqueue($parentId);
                 }
             }
         }
 
-        return false; // No relationship found
+        return false;
     }
 
     public static function createsCycle($parentId, $childId)
