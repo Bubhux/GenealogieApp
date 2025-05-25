@@ -280,15 +280,9 @@ Utilisateur D : ("Accepter")
 ### Schéma de base de données
 
 - Le schéma de la base de données avec l'application **DBdiagram.io**
-- Voir le diagramme interactif ➔ [DB Schéma](https://dbdiagram.io/d/6830ef4ab9f7446da3ebcc46)  
 
-<iframe 
-  src="https://dbdiagram.io/e/6830ef4ab9f7446da3ebcc46/6831284cb9f7446da3eea41c" 
-  width="100%" 
-  height="500px"
-  style="border:none; background:transparent;"
-  title="Diagramme de Base de Données"
-></iframe>
+- **Version interactive** (lecture seule) ➔ [Voir sur DBdiagram.io](https://dbdiagram.io/d/GenealogieApp-6830ef4ab9f7446da3ebcc46)  
+- **Version figée** (pour référence) ➔ [Lien d'embed spécifique](https://dbdiagram.io/e/6830ef4ab9f7446da3ebcc46/6831284cb9f7446da3eea41c) (identique à l'iframe non affichée)
 
 --------------------------------------------------------------------------------------------------------------------------------
 
